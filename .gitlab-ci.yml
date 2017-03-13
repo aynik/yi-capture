@@ -1,0 +1,19 @@
+image: node:latest
+
+before_script:
+  - npm set progress=false
+  - npm install --silent
+
+stages:
+  - test
+  - build
+
+test:
+  stage: test
+  script:
+    - npm test
+
+build:
+  stage: build
+  script:
+    - npm run build
