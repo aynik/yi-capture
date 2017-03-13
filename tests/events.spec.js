@@ -10,6 +10,12 @@ const append = (type) => {
   return el
 }
 
+const remove = (index) => {
+  const el = document.body.children[index]
+  document.body.removeChild(el)
+  return Promise.resolve()
+}
+
 describe('events', () => {
   before(() => {
     yi.init({
@@ -30,12 +36,17 @@ describe('events', () => {
   })
 
   it('should trigger exit intent', function (done) {
-    yi.events.on('exitintent', done)
+    yi.events.on('exitintent', () => remove(0).then(done))
     mouse.select(append('textarea')).should.equal(true)
   })
 
   it('should trigger idle', function (done) {
     yi.events.on('idle', done)
     yi.events.detectors.activity.init()
+  })
+
+  it('should trigger active', function (done) {
+    yi.events.on('active', () => remove(0).then(done))
+    mouse.select(append('textarea')).should.equal(true)
   })
 })
