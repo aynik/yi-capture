@@ -1,7 +1,10 @@
-import Intents from './Intents'
+import Events from './Events'
 
-const yi = global.yi = {
-  intents: new Intents()
+class Yi {
+  init (config = { events: {} }) {
+    this.events = new Events(config.events)
+  }
 }
 
+const yi = global.yi = new Yi()
 export default yi

@@ -14,12 +14,14 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
-    "Exitent": "^1.0.1"
+    "Exitent": "^1.0.1",
+    "activity-detector": "^2.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.2.1",
     "chai": "^3.5.0",

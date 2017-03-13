@@ -3,5 +3,8 @@
     ["env", {
       "es2015": { "modules": false }
     }]
+  ],
+	"plugins": [
+    ["transform-object-rest-spread", { "useBuiltIns": true }]
   ]
 }
