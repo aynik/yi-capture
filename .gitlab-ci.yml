@@ -1,19 +1,34 @@
-image: node:latest
-
-before_script:
-  - npm set progress=false
-  - npm install --silent
+variables:
+  S3_BUCKET_NAME: yi-capture
 
 stages:
   - test
   - build
+  - deploy
 
 test:
   stage: test
+  image: node:latest
   script:
+    - npm set progress=false
+    - npm install --silent
     - npm test
 
 build:
   stage: build
+  image: node:latest
   script:
+    - npm set progress=false
+    - npm install --silent
     - npm run build
+  artifacts:
+    paths:
+      - dist
+
+deploy:
+  stage: deploy
+  image: python:latest
+  script:
+    - pip install awscli
+    - aws s3 cp dist/build.js.gz s3://$S3_BUCKET_NAME/yi-capture-$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json).min.js --acl public-read --content-encoding gzip
+    - aws s3 cp s3://$S3_BUCKET_NAME/yi-capture-$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json).min.js s3://$S3_BUCKET_NAME/yi-capture-latest.min.js --acl public-read --content-encoding gzip

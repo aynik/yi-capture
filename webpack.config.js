@@ -1,5 +1,7 @@
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
+
+const CompressionPlugin = require('compression-webpack-plugin')
 
 module.exports = {
   entry: './src/main.js',
@@ -43,6 +45,11 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
+    }),
+    new CompressionPlugin({
+      asset: '[file].gz',
+      algorithm: 'gzip',
+      test: /\.js$/
     })
   ])
 }
