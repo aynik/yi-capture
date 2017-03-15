@@ -1,10 +1,9 @@
 import Events from './Events'
 
-class Yi {
-  init (config = { events: {} }) {
+class Capture {
+  constructor (config = { events: {} }) {
     this.events = new Events(config.events)
   }
 }
 
-const yi = global.yi = new Yi()
-export default yi
+module.exports = Capture

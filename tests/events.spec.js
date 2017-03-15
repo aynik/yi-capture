@@ -2,7 +2,7 @@
 
 const { mouse } = effroi
 
-import yi from '../'
+import Capture from '../'
 
 const append = (type) => {
   const el = document.createElement(type)
@@ -17,8 +17,10 @@ const remove = (index) => {
 }
 
 describe('events', () => {
+  let capture
+
   before(() => {
-    yi.init({
+    capture = new Capture({
       events: {
         exitIntent: {
           threshold: 10
@@ -36,17 +38,17 @@ describe('events', () => {
   })
 
   it('should trigger exit intent', function (done) {
-    yi.events.on('exitintent', () => remove(0).then(done))
+    capture.events.on('exitintent', () => remove(0).then(done))
     mouse.select(append('textarea')).should.equal(true)
   })
 
   it('should trigger idle', function (done) {
-    yi.events.on('idle', done)
-    yi.events.detectors.activity.init()
+    capture.events.on('idle', done)
+    capture.events.detectors.activity.init()
   })
 
   it('should trigger active', function (done) {
-    yi.events.on('active', () => remove(0).then(done))
+    capture.events.on('active', () => remove(0).then(done))
     mouse.select(append('textarea')).should.equal(true)
   })
 })
