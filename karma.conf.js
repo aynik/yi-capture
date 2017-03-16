@@ -9,8 +9,9 @@ module.exports = (config) => {
     singleRun: false,
     autoWatchBatchDelay: 300,
     files: [
-			{ pattern: 'node_modules/babel-polyfill/browser.js', instrument: false },
-      { pattern: './tests/*.spec.js', watched: false }
+      { pattern: 'node_modules/babel-polyfill/browser.js', instrument: false },
+      { pattern: './tests/*.spec.js', watched: false },
+      { pattern: './tests/fixtures/*', included: false }
     ],
     preprocessors: {
       './tests/*.spec.js': ['webpack']

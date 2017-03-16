@@ -25,4 +25,21 @@ export default class Events extends EventEmitter {
     activity.on('active', () => this.emit('active'))
     this.detectors.activity = activity
   }
+
+  destroy () {
+    this._destroyExitIntentDetector()
+    this._destroyActivityDetector()
+  }
+
+  _destroyExitIntentDetector () {
+    const { exitIntent } = this.detectors
+    exitIntent.eventListeners.forEach((_, eventName) => {
+      exitIntent.removeEvent(eventName)
+    })
+  }
+
+  _destroyActivityDetector () {
+    const { activity } = this.detectors
+    activity.stop()
+  }
 }
