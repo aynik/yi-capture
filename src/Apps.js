@@ -1,25 +1,60 @@
-export default class Apps {
-  constructor (config = {}) {
-    this.config = config
-    this.frames = {}
+import Detectors from './Detectors'
+import EventEmitter from 'events'
+
+export class App extends EventEmitter {
+  constructor (config = { detectors: {}, events: {} }) {
+    super()
+    Object.assign(this, config)
+
+    this.detectors = new Detectors(config.detectors)
+
+    for (let event in config.events) {
+      this.detectors.once(event, () => (
+        this[config.events[event].action](name)
+      ))
+    }
   }
 
-  load (name) {
-    if (name in this.config) {
-      return new Promise((resolve, reject) => {
-        const frame = document.createElement('iframe')
-        frame.src = this.config[name].url
-        document.body.appendChild(frame)
-        frame.onload = () => resolve(frame)
-        this.frames[name] = frame
-      })
+  load () {
+    return new Promise((resolve, reject) => {
+      const frame = document.createElement('iframe')
+      frame.src = this.url
+      document.body.appendChild(frame)
+      frame.onload = () => resolve(frame)
+      this.frame = frame
+      this.emit('load')
+    })
+  }
+
+  unload () {
+    if (this.frame) {
+      document.body.removeChild(this.frame)
+      delete this.frame
+      this.emit('unload')
     }
-    return Promise.resolve(null)
   }
 
   destroy () {
-    for (let name in this.frames) {
-      document.body.removeChild(this.frames[name])
+    this.unload()
+    this.detectors.destroy()
+    this.emit('destroy')
+  }
+}
+
+export default class Apps {
+  constructor (config = {}) {
+    this.collection = {}
+    for (let name in config) {
+      this.collection[name] = new App(config[name])
+      this.collection[name].once('destroy', () => {
+        delete this.collection[name]
+      })
+    }
+  }
+
+  destroy () {
+    for (let app in this.collecton) {
+      this.collection[app].destroy()
     }
   }
 }

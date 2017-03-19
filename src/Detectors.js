@@ -2,16 +2,16 @@ import EventEmitter from 'events'
 import Exitent from 'Exitent'
 import createActivityDetector from 'activity-detector'
 
-export default class Events extends EventEmitter {
+export default class Detectors extends EventEmitter {
   constructor (config = { exitIntent: {}, activity: {} }) {
     super()
-    this.detectors = {}
+    this.collection = {}
     this._initExitIntentDetector(config.exitIntent)
     this._initActivityDetector(config.activity)
   }
 
   _initExitIntentDetector (config = {}) {
-    this.detectors.exitIntent = new Exitent({
+    this.collection.exitIntent = new Exitent({
       ...config,
       onExitent: () => (
         this.emit('exitintent')
@@ -23,7 +23,7 @@ export default class Events extends EventEmitter {
     const activity = createActivityDetector(config)
     activity.on('idle', () => this.emit('idle'))
     activity.on('active', () => this.emit('active'))
-    this.detectors.activity = activity
+    this.collection.activity = activity
   }
 
   destroy () {
@@ -32,14 +32,14 @@ export default class Events extends EventEmitter {
   }
 
   _destroyExitIntentDetector () {
-    const { exitIntent } = this.detectors
+    const { exitIntent } = this.collection
     exitIntent.eventListeners.forEach((_, eventName) => {
       exitIntent.removeEvent(eventName)
     })
   }
 
   _destroyActivityDetector () {
-    const { activity } = this.detectors
+    const { activity } = this.collection
     activity.stop()
   }
 }
