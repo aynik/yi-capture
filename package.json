@@ -15,7 +15,7 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
-    "Exitent": "^1.0.1",
+    "Exitent": "homeopatchy/Exitent",
     "activity-detector": "^2.0.0",
     "axios": "^0.15.3"
   },
