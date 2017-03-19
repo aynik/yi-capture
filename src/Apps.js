@@ -20,7 +20,8 @@ export class App extends EventEmitter {
     axios.get(this.url).then((res) => {
       this._url = this.url
       this.url = 'data:text/html;charset=UTF-8,' +
-        encodeURIComponent(res.data)
+        encodeURIComponent(res.data.replace('<head>',
+          '<head>\n<base href="' + this._url + '" />'))
     })
   }
 
