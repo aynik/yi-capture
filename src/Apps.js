@@ -16,14 +16,16 @@ export class App extends EventEmitter {
   }
 
   load () {
-    return new Promise((resolve, reject) => {
-      const frame = document.createElement('iframe')
-      frame.src = this.url
-      document.body.appendChild(frame)
-      frame.onload = () => resolve(frame)
-      this.frame = frame
-      this.emit('load')
-    })
+    const frame = document.createElement('iframe')
+    frame.style.position = 'fixed'
+    frame.style.width = '100vw'
+    frame.style.height = '100vh'
+    frame.style.zIndex = 999
+    frame.style.top = 0
+    frame.src = this.url
+    document.body.appendChild(frame)
+    frame.onload = () => this.emit('load')
+    this.frame = frame
   }
 
   unload () {
