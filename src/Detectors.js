@@ -8,6 +8,7 @@ export default class Detectors extends EventEmitter {
     this.collection = {}
     this._initExitIntentDetector(config.exitIntent)
     this._initActivityDetector(config.activity)
+    setImmediate(() => this.emit('ready'))
   }
 
   _initExitIntentDetector (config = {}) {

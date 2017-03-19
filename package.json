@@ -16,7 +16,8 @@
   },
   "dependencies": {
     "Exitent": "^1.0.1",
-    "activity-detector": "^2.0.0"
+    "activity-detector": "^2.0.0",
+    "axios": "^0.15.3"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

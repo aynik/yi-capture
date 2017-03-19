@@ -1,5 +1,6 @@
-import Detectors from './Detectors'
+import axios from 'axios'
 import EventEmitter from 'events'
+import Detectors from './Detectors'
 
 export class App extends EventEmitter {
   constructor (config = { detectors: {}, events: {} }) {
@@ -13,6 +14,14 @@ export class App extends EventEmitter {
         this[config.events[event].action](name)
       ))
     }
+  }
+
+  prefetch () {
+    axios.get(this.url).then((res) => {
+      this._url = this.url
+      this.url = 'data:text/html;charset=UTF-8,' +
+        encodeURIComponent(res.data)
+    })
   }
 
   load () {

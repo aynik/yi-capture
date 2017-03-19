@@ -26,6 +26,9 @@ describe('apps', () => {
             }
           },
           events: {
+            ready: {
+              action: 'prefetch'
+            },
             exitintent: {
               action: 'load'
             },
@@ -60,7 +63,9 @@ describe('apps', () => {
         done()
       })
     })
-    mouse.select(append('textarea')).should.equal(true)
+    setTimeout(() => {
+      mouse.select(append('textarea')).should.equal(true)
+    }, 200)
   })
 
   it('should trigger idle and unload panel', (done) => {
