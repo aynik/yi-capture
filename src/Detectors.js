@@ -1,14 +1,26 @@
 import EventEmitter from 'events'
 import Exitent from 'Exitent'
+import bowser from 'bowser'
 import createActivityDetector from 'activity-detector'
 
 export default class Detectors extends EventEmitter {
-  constructor (config = { exitIntent: {}, activity: {} }) {
+  constructor (config = {}) {
     super()
     this.collection = {}
-    this._initExitIntentDetector(config.exitIntent)
-    this._initActivityDetector(config.activity)
+    if (config.browser) {
+      this._initBrowserDetector()
+    }
+    if (config.exitIntent) {
+      this._initExitIntentDetector(config.exitIntent)
+    }
+    if (config.activity) {
+      this._initActivityDetector(config.activity)
+    }
     setImmediate(() => this.emit('ready'))
+  }
+
+  _initBrowserDetector () {
+    this.collection.browser = bowser._detect(window.navigator.userAgent)
   }
 
   _initExitIntentDetector (config = {}) {
@@ -28,8 +40,12 @@ export default class Detectors extends EventEmitter {
   }
 
   destroy () {
-    this._destroyExitIntentDetector()
-    this._destroyActivityDetector()
+    if (this.collection.exitIntent) {
+      this._destroyExitIntentDetector()
+    }
+    if (this.collection.activity) {
+      this._destroyActivityDetector()
+    }
   }
 
   _destroyExitIntentDetector () {

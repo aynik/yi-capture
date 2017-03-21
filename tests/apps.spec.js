@@ -1,4 +1,4 @@
-/* global effroi describe before beforeEach it after */
+/* global effroi describe before it after */
 
 const { mouse } = effroi
 
@@ -18,7 +18,8 @@ describe('apps', () => {
           url: '/base/tests/fixtures/panel.html',
           detectors: {
             exitIntent: {
-              threshold: 10
+              threshold: 10,
+              maxDisplays: 1
             },
             activity: {
               timeToIdle: 1000,
@@ -39,10 +40,6 @@ describe('apps', () => {
         }
       }
     })
-  })
-
-  beforeEach(() => {
-    localStorage.clear()
   })
 
   it('should have loaded panel app', () => {
@@ -89,5 +86,6 @@ describe('apps', () => {
     unlisten(window, 'message', onmessage)
     findAll('textarea').forEach(remove)
     capture.destroy()
+    localStorage.clear()
   })
 })

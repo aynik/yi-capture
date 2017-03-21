@@ -15,9 +15,10 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
+    "axios": "^0.15.3",
     "Exitent": "homeopatchy/Exitent",
     "activity-detector": "^2.0.0",
-    "axios": "^0.15.3"
+    "bowser": "^1.6.0"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",
