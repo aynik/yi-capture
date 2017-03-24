@@ -1,19 +1,18 @@
 import axios from 'axios'
 import EventEmitter from 'events'
 import Detectors from './Detectors'
+import { bindEvent, bindEvents } from './util'
 
 export class App extends EventEmitter {
   constructor (config = { detectors: {}, events: {} }) {
     super()
     Object.assign(this, config)
-
     this.detectors = new Detectors(config.detectors)
+    bindEvents(this, config.events)
+  }
 
-    for (let event in config.events) {
-      this.detectors.once(event, () => (
-        this[config.events[event].action](name)
-      ))
-    }
+  bindEvent (...args) {
+    return bindEvent(this, ...args)
   }
 
   prefetch () {

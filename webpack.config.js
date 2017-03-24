@@ -36,7 +36,8 @@ if (process.env.NODE_ENV === 'production') {
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: '"production"'
+        NODE_ENV: '"production"',
+        API_BASE_URL: '"http://capture-api-dev.eu-west-1.elasticbeanstalk.com/v1"'
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
