@@ -44,6 +44,7 @@ export class App extends EventEmitter {
   load () {
     return new Promise((resolve, reject) => {
       const frame = document.createElement('iframe')
+      frame.style.border = 0
       frame.style.position = 'fixed'
       frame.style.width = '100vw'
       frame.style.height = '100vh'
