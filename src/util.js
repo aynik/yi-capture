@@ -15,9 +15,10 @@ export const bindEvent = (context, event, action) => {
   return new Promise((resolve, reject) => {
     context.detectors.once(event, (...args) => {
       if (typeof action === 'string') {
-        resolve(findKey(context, action, () => {}).apply(context, args))
+        resolve(findKey(context, action, () => {})
+          .apply(context, [event].concat(args)))
       } else if (typeof action === 'function') {
-        resolve(action(...args))
+        resolve(action(event, ...args))
       } else {
         reject(new Error("Can't bind event"))
       }

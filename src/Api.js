@@ -9,7 +9,7 @@ export default class Api {
 
   createEvent (data) {
     return this.client.post('/events', new Event(data))
-    .then((response) => response.data)
+      .then((response) => response.data)
   }
 }
 

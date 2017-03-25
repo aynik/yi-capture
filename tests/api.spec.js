@@ -12,7 +12,6 @@ describe('api', () => {
   let sandbox
   let capture
   let browser
-  let device
   let events
 
   before(() => {
@@ -28,39 +27,26 @@ describe('api', () => {
       }
     })
 
-    browser = {
-      name: capture.detectors.collection.browser.name,
-      version: capture.detectors.collection.browser.version
-    }
-
-    device = {
-      type: capture.detectors.collection.browser.tablet
-        ? 'tablet' : capture.detectors.collection.browser.mobile
-        ? 'mobile' : 'desktop'
-    }
+    browser = capture.detectors.collection.browser
 
     events = {
       exitIntent: {
         id: uuidv4(),
-        appId: uuidv4(),
+        appId: 0,
         type: 'exitintent',
-        browser,
-        device
+        browser
       }
     }
   })
 
   it('should send an exitintent event', (done) => {
-    capture.bindEvent('exitintent', () => {
-      return capture.api.createEvent(events.exitIntent)
-    }).then((data) => {
+    capture.bindEvent('exitintent', 'sendEvent').then((data) => {
       data.should.deep.equal(events.exitIntent)
       done()
     })
-    const resolved = new Promise((resolve, reject) => (
-      resolve({ data: events.exitIntent })
+    sandbox.stub(capture.api.client, 'post').callsFake((_, data) => (
+      Promise.resolve({ data })
     ))
-    sandbox.stub(capture.api.client, 'post').returns(resolved)
     mouse.select(append('textarea')).should.equal(true)
   })
 

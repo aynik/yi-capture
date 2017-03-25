@@ -20,7 +20,15 @@ export default class Detectors extends EventEmitter {
   }
 
   _initBrowserDetector () {
-    this.collection.browser = bowser._detect(window.navigator.userAgent)
+    const detected = bowser._detect(window.navigator.userAgent)
+
+    this.collection.browser = {
+      name: detected.name,
+      version: detected.version,
+      device: detected.tablet
+        ? 'tablet' : detected.mobile
+        ? 'mobile' : 'desktop'
+    }
   }
 
   _initExitIntentDetector (config = {}) {
