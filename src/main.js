@@ -1,6 +1,6 @@
 import Apps from './Apps'
-import Detectors from './Detectors'
 import Api from './Api'
+import Detectors from './Detectors'
 import { bindEvent, bindEvents } from './util'
 
 const uuidv4 = () => '110ec58a-a0f2-4ac4-8393-c866d813b8d1'

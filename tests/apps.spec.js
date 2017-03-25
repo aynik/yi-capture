@@ -2,21 +2,31 @@
 
 const { mouse } = effroi
 
+import sinon from 'sinon'
 import Capture from '../'
 import Detectors from '../src/Detectors'
 
 import { append, findAll, remove, listen, unlisten } from './util'
 
+const uuidv4 = () => '110ec58a-a0f2-4ac4-8393-c866d813b8d1'
+
 describe('apps', () => {
+  let sandbox
   let capture
+  let browser
+  let events
   let onmessage
 
   before(() => {
+    sandbox = sinon.sandbox.create()
+
     capture = new Capture({
       apps: {
         panel: {
+          id: 1,
           url: '/base/tests/fixtures/panel.html',
           detectors: {
+            browser: {},
             exitIntent: {
               threshold: 10,
               maxDisplays: 1
@@ -30,9 +40,6 @@ describe('apps', () => {
             ready: {
               action: 'prefetch'
             },
-            exitintent: {
-              action: 'load'
-            },
             idle: {
               action: 'unload'
             }
@@ -40,6 +47,17 @@ describe('apps', () => {
         }
       }
     })
+
+    browser = capture.apps.collection.panel.detectors.collection.browser
+
+    events = {
+      exitIntent: {
+        id: uuidv4(),
+        appId: 1,
+        type: 'exitintent',
+        browser
+      }
+    }
   })
 
   it('should have loaded panel app', () => {
@@ -51,7 +69,7 @@ describe('apps', () => {
     capture.apps.collection.panel.should.not.have.property('frame')
   })
 
-  it('should trigger exit intent and load panel', (done) => {
+  it('should trigger exit intent, load panel and send event', (done) => {
     capture.apps.collection.panel.once('load', () => {
       capture.apps.collection.panel.should.have.property('frame')
       findAll('iframe').length.should.equal(1)
@@ -60,9 +78,16 @@ describe('apps', () => {
         done()
       })
     })
-    setTimeout(() => {
-      mouse.select(append('textarea')).should.equal(true)
-    }, 200)
+    capture.apps.collection.panel.bindEvent('exitintent', ['load', 'sendEvent'])
+      .then(([frame, eventData]) => {
+        frame.should.equal(capture.apps.collection.panel.frame)
+        eventData.should.deep.equal(events.exitIntent)
+      })
+    sandbox.stub(capture.apps.collection.panel.api.client, 'post')
+      .callsFake((_, data) => (
+        Promise.resolve({ data })
+      ))
+    mouse.select(append('textarea')).should.equal(true)
   })
 
   it('should trigger idle and unload panel', (done) => {
@@ -85,6 +110,7 @@ describe('apps', () => {
   after(() => {
     unlisten(window, 'message', onmessage)
     findAll('textarea').forEach(remove)
+    sandbox.restore()
     capture.destroy()
     localStorage.clear()
   })
