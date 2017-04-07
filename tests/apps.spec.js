@@ -18,6 +18,7 @@ describe('apps', () => {
   let onmessage
 
   before(() => {
+    localStorage.clear()
     sandbox = sinon.sandbox.create()
 
     capture = new Capture({

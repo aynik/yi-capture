@@ -15,6 +15,7 @@ describe('api', () => {
   let events
 
   before(() => {
+    localStorage.clear()
     sandbox = sinon.sandbox.create()
 
     capture = new Capture({

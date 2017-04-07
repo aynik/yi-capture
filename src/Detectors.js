@@ -4,8 +4,9 @@ import bowser from 'bowser'
 import createActivityDetector from 'activity-detector'
 
 export default class Detectors extends EventEmitter {
-  constructor (config = {}) {
+  constructor (logger, config = {}) {
     super()
+    this.logger = logger
     this.collection = {}
     if (config.browser) {
       this._initBrowserDetector()
@@ -21,29 +22,37 @@ export default class Detectors extends EventEmitter {
 
   _initBrowserDetector () {
     const detected = bowser._detect(window.navigator.userAgent)
-
-    this.collection.browser = {
+    const browser = {
       name: detected.name,
       version: detected.version,
       device: detected.tablet
         ? 'tablet' : detected.mobile
         ? 'mobile' : 'desktop'
     }
+    this.logger.debug('detectors', 'detected browser', browser)
+    this.collection.browser = browser
   }
 
   _initExitIntentDetector (config = {}) {
     this.collection.exitIntent = new Exitent({
       ...config,
-      onExitent: () => (
+      onExitent: () => {
+        this.logger.debug('detectors', 'detected exit intent')
         this.emit('exitintent')
-      )
+      }
     })
   }
 
   _initActivityDetector (config = {}) {
     const activity = createActivityDetector(config)
-    activity.on('idle', () => this.emit('idle'))
-    activity.on('active', () => this.emit('active'))
+    activity.on('idle', () => {
+      this.logger.debug('detectors', 'detected idle')
+      this.emit('idle')
+    })
+    activity.on('active', () => {
+      this.logger.debug('detectors', 'detected active')
+      this.emit('active')
+    })
     this.collection.activity = activity
   }
 
@@ -58,6 +67,7 @@ export default class Detectors extends EventEmitter {
 
   _destroyExitIntentDetector () {
     const { exitIntent } = this.collection
+    this.logger.debug('detectors', 'destroying exit intent detector')
     exitIntent.eventListeners.forEach((_, eventName) => {
       exitIntent.removeEvent(eventName)
     })
@@ -65,6 +75,7 @@ export default class Detectors extends EventEmitter {
 
   _destroyActivityDetector () {
     const { activity } = this.collection
+    this.logger.debug('detectors', 'destroying activity detector')
     activity.stop()
   }
 }

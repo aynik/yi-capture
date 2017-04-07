@@ -3,13 +3,19 @@ import axios from 'axios'
 const { API_BASE_URL } = process.env
 
 export default class Api {
-  constructor (config = { baseURL: API_BASE_URL }) {
+  constructor (logger, config = { baseURL: API_BASE_URL }) {
+    this.logger = logger
     this.client = axios.create(config)
   }
 
   createEvent (data) {
-    return this.client.post('/events', new Event(data))
-      .then((response) => response.data)
+    const route = '/events'
+    const event = new Event(data)
+    this.logger.debug('http post request to ' + route, event)
+    return this.client.post(route, event).then((response) => {
+      this.logger.debug('received response', response.data)
+      return response.data
+    })
   }
 }
 
