@@ -26,7 +26,7 @@ export default class Logger {
   setLevel (label) {
     const level = this.levels[label]
     if (isNaN(level)) {
-      throw new Error('Error level "' + label + '" not existing')
+      throw new Error('Logging level "' + label + '" not available')
     }
     this.level = level
   }
